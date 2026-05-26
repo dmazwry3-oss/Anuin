@@ -1,0 +1,25 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Default timeout (free plan max = 10s, pro = 26s).
+# Translation kadang butuh waktu, naikkan ke 26s biar aman di pro plan.
+[functions."translate"]
+  timeout = 26
+
+# Rewrite /api/* -> /.netlify/functions/*
+[[redirects]]
+  from = "/api/translate"
+  to = "/.netlify/functions/translate"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
