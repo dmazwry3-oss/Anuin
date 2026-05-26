@@ -3,97 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>dmaz - PDF Translator</title>
+  <meta name="description" content="Anuin - Scribd Downloader gratis. Tempel URL Scribd, dapatkan link unduh PDF/DOC dalam hitungan detik." />
+  <meta name="theme-color" content="#0b0d12" />
+  <title>Anuin · Scribd Downloader</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231e6fff'/><text x='50%25' y='55%25' font-size='38' font-family='Inter,Arial' font-weight='800' fill='white' text-anchor='middle' dominant-baseline='middle'>A</text></svg>" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="logo">d</span>
-      <h1>dmaz</h1>
-      <span class="tag">PDF Translator (Scrape Mode)</span>
+      <span class="logo">A</span>
+      <div class="brand-text">
+        <h1>Anuin</h1>
+        <span class="tag">Scribd Downloader · Gratis tanpa login</span>
+      </div>
     </div>
-    <a class="github" href="#" target="_blank" rel="noreferrer">v1.0</a>
+    <nav class="nav">
+      <a href="#how">Cara pakai</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/" class="github" target="_blank" rel="noopener">GitHub</a>
+    </nav>
   </header>
 
-  <main class="container">
-    <section class="card upload-card" id="dropZone">
-      <div class="upload-inner">
-        <div class="upload-icon">📄</div>
-        <h2>Tarik & lepas PDF di sini</h2>
-        <p>atau</p>
-        <label class="btn primary">
-          Pilih file PDF
-          <input type="file" id="fileInput" accept="application/pdf" hidden />
-        </label>
-        <p class="hint" id="fileLabel">Belum ada file dipilih</p>
-      </div>
-    </section>
-
-    <section class="card controls">
-      <div class="row">
-        <div class="field">
-          <label>Dari bahasa</label>
-          <select id="sourceLang"></select>
-        </div>
-        <button class="swap" id="swapBtn" title="Tukar bahasa">⇄</button>
-        <div class="field">
-          <label>Ke bahasa</label>
-          <select id="targetLang"></select>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn primary" id="translateBtn" disabled>
-          Terjemahkan PDF
-        </button>
-        <button class="btn ghost" id="clearBtn">Reset</button>
-      </div>
-      <div class="progress" id="progress" hidden>
-        <div class="bar"><div class="bar-fill" id="barFill"></div></div>
-        <span id="progressText">Memproses...</span>
-      </div>
-    </section>
-
-    <section class="results" id="results" hidden>
-      <div class="card pane">
-        <div class="pane-head">
-          <h3>Teks asli</h3>
-          <div class="pane-actions">
-            <button class="btn ghost sm" data-copy="original">Salin</button>
-            <button class="btn ghost sm" data-download="original">Unduh .txt</button>
-          </div>
-        </div>
-        <pre id="originalText" class="pane-body"></pre>
-      </div>
-      <div class="card pane">
-        <div class="pane-head">
-          <h3>Hasil terjemahan</h3>
-          <div class="pane-actions">
-            <button class="btn ghost sm" data-copy="translated">Salin</button>
-            <button class="btn ghost sm" data-download="translated">Unduh .txt</button>
-          </div>
-        </div>
-        <pre id="translatedText" class="pane-body"></pre>
-      </div>
-    </section>
-
-    <section class="card info">
-      <h3>Cara kerja</h3>
-      <ol>
-        <li>Pilih file PDF (maks. 25 MB).</li>
-        <li>Tentukan bahasa sumber dan tujuan.</li>
-        <li>Server mengekstrak teks dengan <code>pdf-parse</code>, lalu memanggil endpoint scrape <code>translate.googleapis.com</code> per potongan.</li>
-        <li>Hasil ditampilkan berdampingan, bisa disalin atau diunduh.</li>
-      </ol>
-      <p class="hint">
-        Catatan: PDF hasil scan (gambar) tidak menghasilkan teks. Diperlukan OCR
-        terpisah untuk kasus tersebut.
+  <main>
+    <section class="hero">
+      <h2 class="hero-title">
+        Unduh dokumen Scribd<br /><span class="grad">tanpa langganan, tanpa ribet</span>
+      </h2>
+      <p class="hero-sub">
+        Tempel URL halaman Scribd di bawah, sistem akan mencari mirror &amp; link unduh
+        PDF/DOC otomatis. Mendukung <code>scribd.com/document</code>, <code>/doc</code>,
+        dan <code>/presentation</code>.
       </p>
+
+      <form id="form" class="search">
+        <input
+          id="url"
+          type="url"
+          inputmode="url"
+          autocomplete="off"
+          placeholder="https://www.scribd.com/document/123456789/judul-dokumen"
+          spellcheck="false"
+          required
+        />
+        <button id="submitBtn" type="submit" class="btn primary">
+          <span class="label">Get Download Now</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+
+      <div class="examples">
+        <span>Contoh:</span>
+        <button class="chip" data-example="https://www.scribd.com/document/36341/Business-Plan-Template">/document/36341/Business-Plan-Template</button>
+        <button class="chip" data-example="https://www.scribd.com/doc/10301747/Bumble-Boogie-Sheet-Music">/doc/10301747/Bumble-Boogie-Sheet-Music</button>
+      </div>
+
+      <div id="alert" class="alert" hidden></div>
+    </section>
+
+    <section id="resultSection" class="result" hidden>
+      <div class="result-head">
+        <div>
+          <small class="muted">Hasil untuk</small>
+          <h3 id="resultTitle">—</h3>
+          <a id="resultCanonical" class="muted small" href="#" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+        <div class="result-meta">
+          <span class="badge" id="kindBadge">—</span>
+          <span class="muted small" id="docIdBadge">—</span>
+        </div>
+      </div>
+
+      <div class="mirrors" id="mirrors"></div>
+
+      <p class="hint small">
+        Tip: Mirror utama akan membuka halaman perantara yang punya tombol <em>Get Download Now</em>.
+        Jika satu mirror gagal/lambat, coba mirror lain di bawahnya.
+      </p>
+    </section>
+
+    <section id="how" class="card-grid">
+      <article class="info-card">
+        <div class="info-icon">📋</div>
+        <h4>1. Salin URL Scribd</h4>
+        <p>Buka dokumen yang mau diunduh di scribd.com, salin URL dari address bar browser.</p>
+      </article>
+      <article class="info-card">
+        <div class="info-icon">🔗</div>
+        <h4>2. Tempel di Anuin</h4>
+        <p>Tempel URL ke kolom di atas, klik <strong>Get Download Now</strong>.</p>
+      </article>
+      <article class="info-card">
+        <div class="info-icon">⬇️</div>
+        <h4>3. Pilih mirror &amp; unduh</h4>
+        <p>Sistem menyediakan beberapa mirror. Klik yang berlabel <em>Recommended</em> dulu.</p>
+      </article>
+    </section>
+
+    <section id="faq" class="faq">
+      <h3>Pertanyaan umum</h3>
+
+      <details>
+        <summary>Apakah ini benar-benar gratis?</summary>
+        <p>Ya. Anuin tidak meminta login atau pembayaran. Semua proses dilakukan via mirror publik.</p>
+      </details>
+      <details>
+        <summary>Format apa saja yang bisa diunduh?</summary>
+        <p>Tergantung dokumen aslinya: umumnya PDF, kadang DOC/DOCX, EPUB, atau slide presentasi (PPT).</p>
+      </details>
+      <details>
+        <summary>Kenapa tombol <em>Recommended</em> kadang lambat?</summary>
+        <p>Mirror publik bisa rate-limit. Coba refresh, atau pakai mirror lain di daftar.</p>
+      </details>
+      <details>
+        <summary>Apakah aman?</summary>
+        <p>Anuin tidak menyimpan URL atau hasil unduhan kamu di server. Semua request hanya
+        di-forward ke mirror publik yang relevan. Tetap berhati-hati saat membuka mirror eksternal.</p>
+      </details>
+      <details>
+        <summary>Saya cuma dapat halaman, bukan file PDF langsung?</summary>
+        <p>Itu wajar. Mirror publik biasanya menampilkan halaman perantara berisi tombol
+        <strong>Get Download Now</strong>. Klik tombol tersebut untuk memulai unduhan asli.</p>
+      </details>
     </section>
   </main>
 
   <footer class="footer">
-    <span>© <span id="year"></span> dmaz · dibuat dengan metode scrape</span>
+    <span>© <span id="year"></span> Anuin · Dibangun untuk Netlify · Dokumen tetap milik kreatornya.</span>
   </footer>
 
   <script src="/app.js"></script>
