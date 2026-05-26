@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>dmaz - PDF Translator</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">d</span>
+      <h1>dmaz</h1>
+      <span class="tag">PDF Translator (Scrape Mode)</span>
+    </div>
+    <a class="github" href="#" target="_blank" rel="noreferrer">v1.0</a>
+  </header>
+
+  <main class="container">
+    <section class="card upload-card" id="dropZone">
+      <div class="upload-inner">
+        <div class="upload-icon">📄</div>
+        <h2>Tarik & lepas PDF di sini</h2>
+        <p>atau</p>
+        <label class="btn primary">
+          Pilih file PDF
+          <input type="file" id="fileInput" accept="application/pdf" hidden />
+        </label>
+        <p class="hint" id="fileLabel">Belum ada file dipilih</p>
+      </div>
+    </section>
+
+    <section class="card controls">
+      <div class="row">
+        <div class="field">
+          <label>Dari bahasa</label>
+          <select id="sourceLang"></select>
+        </div>
+        <button class="swap" id="swapBtn" title="Tukar bahasa">⇄</button>
+        <div class="field">
+          <label>Ke bahasa</label>
+          <select id="targetLang"></select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="translateBtn" disabled>
+          Terjemahkan PDF
+        </button>
+        <button class="btn ghost" id="clearBtn">Reset</button>
+      </div>
+      <div class="progress" id="progress" hidden>
+        <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+        <span id="progressText">Memproses...</span>
+      </div>
+    </section>
+
+    <section class="results" id="results" hidden>
+      <div class="card pane">
+        <div class="pane-head">
+          <h3>Teks asli</h3>
+          <div class="pane-actions">
+            <button class="btn ghost sm" data-copy="original">Salin</button>
+            <button class="btn ghost sm" data-download="original">Unduh .txt</button>
+          </div>
+        </div>
+        <pre id="originalText" class="pane-body"></pre>
+      </div>
+      <div class="card pane">
+        <div class="pane-head">
+          <h3>Hasil terjemahan</h3>
+          <div class="pane-actions">
+            <button class="btn ghost sm" data-copy="translated">Salin</button>
+            <button class="btn ghost sm" data-download="translated">Unduh .txt</button>
+          </div>
+        </div>
+        <pre id="translatedText" class="pane-body"></pre>
+      </div>
+    </section>
+
+    <section class="card info">
+      <h3>Cara kerja</h3>
+      <ol>
+        <li>Pilih file PDF (maks. 25 MB).</li>
+        <li>Tentukan bahasa sumber dan tujuan.</li>
+        <li>Server mengekstrak teks dengan <code>pdf-parse</code>, lalu memanggil endpoint scrape <code>translate.googleapis.com</code> per potongan.</li>
+        <li>Hasil ditampilkan berdampingan, bisa disalin atau diunduh.</li>
+      </ol>
+      <p class="hint">
+        Catatan: PDF hasil scan (gambar) tidak menghasilkan teks. Diperlukan OCR
+        terpisah untuk kasus tersebut.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> dmaz · dibuat dengan metode scrape</span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
